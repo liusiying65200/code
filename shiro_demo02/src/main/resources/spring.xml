@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:annotation-config></context:annotation-config>
+    <context:component-scan base-package="net.hualisheng"></context:component-scan>
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="filterChainDefinitions">
+            <value>
+                /admin.jsp = anon
+                /index.jsp = anon
+                /user/login.html = anon
+                /user/goLogin.html =anon
+                /home.jsp =anon
+                /** authc
+            </value>
+        </property>
+        <property name="unauthorizedUrl" value="/error.jsp"/>
+        <property name="loginUrl" value="/login.jsp"/>
+        <property name="successUrl" value="/index.jsp"/>
+    </bean>
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+       <property name="realm" ref="constormRealm"/>
+    </bean>
+    <bean id="logoutFilter" class="net.hualisheng.shiro.filter.CustormLogoutFilter">
+        <property name="redirectUrl" value="/login"/>
+    </bean>
+    <bean id="constormRealm" class="net.hualisheng.shiro.realm.ConstormRealm">
+        <property name="cachingEnabled" value="true"/>
+    </bean>
+
+</beans>

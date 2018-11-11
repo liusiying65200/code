@@ -1,0 +1,3 @@
+net\hualisheng\controller\ShiroTestController.class
+net\hualisheng\realm\CustomRealm.class
+net\hualisheng\filter\SystemLogoutFilter.class

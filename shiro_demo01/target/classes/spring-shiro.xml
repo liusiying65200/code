@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--开启shiro的注解-->
+    <bean id="advisorAutoProxyCreator" class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
+        <property name="proxyTargetClass" value="true"/>
+    </bean>
+    <!---->
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor"/>
+    <!--注入自定义Realm-->
+    <bean id="customRealm" class="net.hualisheng.realm.CustomRealm"/>
+    <bean id="webSecurityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="customRealm"/>
+
+    </bean>
+    <bean id="logoutFilter" class="net.hualisheng.filter.SystemLogoutFilter">
+        <property name="redirectUrl" value="/login"/>
+    </bean>
+    <!--注入shiro filter-->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="webSecurityManager"/>
+        <property name="loginUrl" value="/login.jsp"/>
+        <property name="successUrl" value="/index.jsp"/>
+        <property name="unauthorizedUrl" value=""/>
+        <property name="filters">
+            <map>
+                <entry key="logout" value-ref="logoutFilter"/>
+            </map>
+        </property>
+        <property name="filterChainDefinitions">
+            <value>
+                /share = authc
+                /logout = logout
+                /css/** =anon
+                /js/** = anon
+                /images/** = anon
+                /login.jsp* = anon
+                /validatecode.jsp* =anon
+                /userAction_login* =anon
+                /** =authc
+                <!-- druid监控页面允许访问 -->
+                /druid/** = anon
+                <!--角色认证-->
+                /admin/repairType/index = roles["ROLE_ADMIN"]
+                /admin/user=roles["ROLE_ADMIN"]
+                /admin/complaint/list= roles["ROLE_SERVICE,ROLE_ADMIN"]
+            </value>
+        </property>
+    </bean>
+
+
+</beans>
